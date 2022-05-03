@@ -15,6 +15,12 @@ var canvas_width = 400;
 var canvas_height = 400;
 var seed_size = 20;
 
+/**
+* setup() creates the canvas and the grids that are used to
+* hold the concentration values. The grid is initialized such
+* that density of Chemical A is 1.0 and Chemical B is 0.0.
+* Then, a seed of Chemical B is added.
+*/
 function setup() {
   // Create a canvas of 200px by 200px
   createCanvas(canvas_width, canvas_height);
@@ -64,6 +70,10 @@ function setup() {
   }
 }
 
+/**
+* This function is the implementation of the Gray-Scott algorithm.
+* The current grid is used to populate the new grid.
+*/
 function updateConcentrations(){
   // Note: We start at 1 and end at length - 1 so that the laplace
   // function does not hit an index out of bounds error
@@ -99,6 +109,10 @@ function updateConcentrations(){
   }
 }
 
+/**
+* populatePixels() takes the concentration data from the grid
+* and transfers it to the pixel grid.
+*/
 function populatePixels(){
   // https://p5js.org/reference/#/p5/loadPixels
   // for documentation.
@@ -146,12 +160,21 @@ function populatePixels(){
   updatePixels();
 }
 
+/**
+* swapGrids() switches the data contained in current_grid and new_grid
+*/
 function swapGrids() {
   var temp_grid = current_grid;
   current_grid = new_grid;
   new_grid = temp_grid;
 }
 
+/**
+* The Laplacian function for Chemical A.
+* @param x: The X coordinate for the current cell.
+* @param y: The Y coordinate for the current cell.
+* @return the combined value of the surrounding cells.
+*/
 function laplaceA(x, y) {
   var sumA = 0;
 
@@ -182,6 +205,12 @@ function laplaceA(x, y) {
   return sumA;
 }
 
+/**
+* The Laplacian function for Chemical B
+* @param x: The X coordinate for the current cell.
+* @param y: The Y coordinate for the current cell.
+* @return the combined value of the surrounding cells.
+*/
 function laplaceB(x, y) {
   var sumB = 0;
 
@@ -212,9 +241,10 @@ function laplaceB(x, y) {
   return sumB;
 }
 
+/**
+* Performs the 3 steps necessary at each timestep.
+*/
 function draw() {
-  background(220);
-
   updateConcentrations();
   populatePixels();
   swapGrids();
